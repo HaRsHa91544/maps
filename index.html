@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+    <h2></h2>
+    <a target="_blank"><button>Get Location</button></a>
+    <script>
+        const head = document.querySelector('h2');
+        const mapsLink = document.querySelector('a');
+        const btn = document.querySelector('button');
+        let cLatitude, cLongitude;
+
+        btn.addEventListener('click', () => {
+            navigator.geolocation.getCurrentPosition(async (position) => {
+
+                const apiKey = '28aacc286097ecf47b5355cb0594b8a2';
+                cLatitude = position.coords.latitude;
+                cLongitude = position.coords.longitude;
+                const addRequest = await fetch(`https://apis.mappls.com/advancedmaps/v1/${apiKey}/rev_geocode?lat=${cLatitude}&lng=${cLongitude}`);
+                const addResponse = await addRequest.json();
+                const address = addResponse.results[0].formatted_address;
+                head.textContent = `Address: ${address}`;
+                mapsLink.href = `https://www.google.com/maps/place/${cLatitude}+${cLongitude}`;
+
+            }, () => { }, { enableHighAccuracy: true, timeout: 10000, maximumAge: 0 });
+        });
+    </script>
+</body>
+
+</html>
